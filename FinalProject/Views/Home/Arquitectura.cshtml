@@ -24,14 +24,47 @@
         <label for="hexOutput">Hexadecimal:</label>
         <input type="text" id="hexOutput" oninput="convertToDecimalFromHex()" placeholder="Resultado en hexadecimal">
     </div>
+
+    <div>
+        <label for="ieee32Output">IEEE 754 (32 bits):</label>
+        <input type="text" id="ieee32Output" class="wide-output" readonly placeholder="Resultado en IEEE 754 (32 bits)">
+    </div>
+
+    <div>
+        <label for="ieee64Output">IEEE 754 (64 bits):</label>
+        <input type="text" id="ieee64Output" class="wider-output" readonly placeholder="Resultado en IEEE 754 (64 bits)">
+    </div>
 </div>
 
+<style>
+    .calculator div {
+        margin-bottom: 10px;
+    }
+
+    .wide-output {
+        width: 400px; /* Ancho aumentado para IEEE 754 de 32 bits */
+    }
+
+    .wider-output {
+        width: 800px; /* Ancho aumentado para IEEE 754 de 64 bits */
+    }
+
+    input[type="text"], input[type="number"] {
+        padding: 5px;
+        font-size: 16px;
+    }
+</style>
+
 <script>function convertFromDecimal() {
-        const decimalValue = document.getElementById("decimalInput").value;
+        const decimalValue = parseFloat(document.getElementById("decimalInput").value);
 
         // Convertir a binario y hexadecimal
-        document.getElementById("binaryOutput").value = parseInt(decimalValue, 10).toString(2);
-        document.getElementById("hexOutput").value = parseInt(decimalValue, 10).toString(16).toUpperCase();
+        document.getElementById("binaryOutput").value = decimalValue.toString(2);
+        document.getElementById("hexOutput").value = decimalValue.toString(16).toUpperCase();
+
+        // Convertir a IEEE 754
+        document.getElementById("ieee32Output").value = convertToIEEE754(decimalValue, 32);
+        document.getElementById("ieee64Output").value = convertToIEEE754(decimalValue, 64);
     }
 
     function convertToDecimalFromBinary() {
@@ -43,6 +76,8 @@
             if (!isNaN(decimalValue)) {
                 document.getElementById("decimalInput").value = decimalValue;
                 document.getElementById("hexOutput").value = decimalValue.toString(16).toUpperCase();
+                document.getElementById("ieee32Output").value = convertToIEEE754(decimalValue, 32);
+                document.getElementById("ieee64Output").value = convertToIEEE754(decimalValue, 64);
             }
         }
     }
@@ -56,6 +91,45 @@
             if (!isNaN(decimalValue)) {
                 document.getElementById("decimalInput").value = decimalValue;
                 document.getElementById("binaryOutput").value = decimalValue.toString(2);
+                document.getElementById("ieee32Output").value = convertToIEEE754(decimalValue, 32);
+                document.getElementById("ieee64Output").value = convertToIEEE754(decimalValue, 64);
             }
         }
+    }
+
+    function convertToIEEE754(number, bits) {
+        let sign, exponent, mantissa, e, m;
+
+        if (number === 0) {
+            return bits === 32 ? "00000000000000000000000000000000" : "0000000000000000000000000000000000000000000000000000000000000000";
+        }
+
+        sign = number < 0 ? 1 : 0;
+        number = Math.abs(number);
+
+        if (bits === 32) {
+            e = 127;
+            m = 23;
+        } else {
+            e = 1023;
+            m = 52;
+        }
+
+        let log2 = Math.floor(Math.log2(number));
+        exponent = log2 + e;
+        let fractionalPart = number / Math.pow(2, log2) - 1;
+
+        mantissa = "";
+        for (let i = 0; i < m; i++) {
+            fractionalPart *= 2;
+            if (fractionalPart >= 1) {
+                mantissa += "1";
+                fractionalPart -= 1;
+            } else {
+                mantissa += "0";
+            }
+        }
+
+        exponent = exponent.toString(2).padStart(bits === 32 ? 8 : 11, "0");
+        return sign + exponent + mantissa;
     }</script>
