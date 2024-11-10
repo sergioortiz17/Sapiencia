@@ -2,6 +2,9 @@
     ViewData["Title"] = "Home Page";
 }
 
+<!-- Enlace a Google Fonts para la fuente cursiva más fina -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
 <!-- Estilos para el efecto neón -->
 <style>
     body {
@@ -21,8 +24,14 @@
     }
 
     .display-4 {
-        font-size: 48px;
-        margin-bottom: 20px;
+        font-family: 'Great Vibes', cursive; /* Fuente cursiva de Google Fonts */
+        font-size: 100px; /* Tamaño grande pero más delicado */
+        color: #39ff14; /* Verde neón suave */
+        text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14, 0 0 15px #39ff14; /* Efecto de neón suave */
+        font-weight: 400; /* Peso ligero */
+        transform: rotate(-10deg); /* Inclina el texto */
+        transition: transform 0.2s;
+        opacity: 1; /* Opacidad inicial */
     }
 
     p {
@@ -38,14 +47,14 @@
 
         .image:hover {
             transform: scale(1.05); /* Agranda la imagen */
-            box-shadow: 0 0 20px #0f0, 0 0 30px #0f0, 0 0 40px #0f0, 0 0 50px #0f0; /* Efecto neón */
-            border: 2px solid #0f0; /* Borde neón */
+            box-shadow: 0 0 15px #39ff14, 0 0 20px #39ff14, 0 0 25px #39ff14; /* Efecto neón más sutil */
+            border: 2px solid #39ff14; /* Borde neón */
         }
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">Bienvenido a la Página Principal</h1>
-    <p>Selecciona una de las imágenes para ir a otra página.</p>
+    <h1 class="display-4" id="neon-text">Sapiencia...</h1>
+    <p>Que Homero vas a ser hoy?</p>
 
     <!-- Imagen para la página de Matemáticas -->
     <a href="@Url.Action("Matematicas", "Home")">
@@ -57,3 +66,18 @@
         <img src="~/images/ArquitecturaSimpsons.jpg" alt="Arquitectura" class="image" style="margin: 20px;">
     </a>
 </div>
+
+<!-- JavaScript para el efecto de parpadeo -->
+<script>const neonText = document.getElementById('neon-text');
+    let isDimmed = false;
+
+    setInterval(() => {
+        if (isDimmed) {
+            neonText.style.opacity = "1";
+            neonText.style.textShadow = "0 0 5px #39ff14, 0 0 10px #39ff14, 0 0 15px #39ff14";
+        } else {
+            neonText.style.opacity = "0.9";
+            neonText.style.textShadow = "0 0 3px #39ff14, 0 0 7px #39ff14, 0 0 10px #39ff14";
+        }
+        isDimmed = !isDimmed;
+    }, 700); // Cambia cada 700ms para un efecto de parpadeo suave</script>

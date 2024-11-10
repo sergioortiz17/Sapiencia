@@ -3,27 +3,98 @@
 }
 
 <div class="text-center">
-    <h1>@ViewData["Title"]</h1>
-    <p>Contenido adicional relacionado con Matemáticas.</p>
-
-    <!-- Canvas para dibujar los círculos -->
-    <canvas id="colorCanvas" width="600" height="400"></canvas>
-
-    <!-- Sección para mostrar la pregunta, puntaje y botones -->
-    <div style="margin-top: 20px;">
-        <p id="question">¿Intercepta A con B?</p>
-
-        <!-- Marcador de puntuación -->
-        <p id="score" style="font-weight: bold; color: lime;">Puntuación: 0</p>
-
-        <!-- Botones -->
-        <button id="checkButton" onclick="checkIntersection()">Listo</button>
-        <button id="submitButton" onclick="submitScore()">Enviar Puntaje</button>
+    <!-- Contenedor para el Canvas con borde de neón -->
+    <div class="neon-border">
+        <!-- Canvas para dibujar los círculos -->
+        <canvas id="colorCanvas" width="600" height="400"></canvas>
     </div>
 
-    <!-- Resultado de la verificación -->
-    <p id="result" style="font-weight: bold;"></p>
+    <!-- Sección para mostrar la instrucción, puntaje y botones -->
+    <div style="margin-top: 20px;">
+        <p id="instruction">Acomoda los conjuntos tal que A y B se intercepten</p>
+
+        <!-- Marcador de puntuación y mensaje -->
+        <div id="score-container" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <p id="score" style="font-weight: bold; color: lime; margin: 0; font-size: 20px;">Puntuación: 0</p>
+            <span id="status-message" style="font-weight: bold; color: lime; font-size: 20px;">Correcto</span>
+        </div>
+
+        <!-- Botones para verificar respuesta y enviar puntaje -->
+        <button id="checkButton" onclick="checkCondition()">Listo</button>
+
+        <div class="button-group">
+            <button id="submitButton" onclick="submitScore()">Enviar Puntaje</button>
+            <button class="home-button" onclick="location.href='/'">Volver al Home</button>
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Efecto de neón para el borde */
+    .neon-border {
+        padding: 10px;
+        display: inline-block;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.7), 0 0 25px rgba(0, 255, 255, 0.5), 0 0 35px rgba(0, 255, 255, 0.3);
+        border: 2px solid rgba(0, 255, 255, 0.7);
+        margin-top: 20px;
+    }
+
+    /* Botón de Home con efecto de neón */
+    .home-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #ff1493;
+        background-color: transparent;
+        border: 2px solid #ff1493;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0px 0px 10px #ff1493;
+        text-shadow: 0px 0px 5px #ff1493;
+        transition: all 0.2s;
+        margin-left: 10px;
+    }
+
+        .home-button:hover {
+            color: #ffffff;
+            background-color: #ff1493;
+            box-shadow: 0px 0px 20px #ff1493;
+        }
+
+    /* Botón de Enviar y Listo */
+    #checkButton, #submitButton {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.7);
+        transition: all 0.2s;
+        margin: 5px;
+    }
+
+        #checkButton:hover, #submitButton:hover {
+            background-color: #555;
+            box-shadow: 0px 0px 15px rgba(0, 255, 255, 1);
+        }
+
+    /* Contenedor para agrupar los botones */
+    .button-group {
+        display: inline-flex;
+        margin-top: 10px;
+    }
+
+    /* Estilos generales */
+    body {
+        background-color: #1a1a1d;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+</style>
+
 <script>const canvas = document.getElementById("colorCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -38,8 +109,8 @@
     let offsetX, offsetY;
     let score = 0; // Puntuación inicial
 
-    // Pregunta actual sobre intersección
-    let currentQuestion = { circle1: "A", circle2: "B" };
+    // Instrucción actual sobre intersección
+    let currentInstruction = {};
 
     // Modo de mezcla para combinar colores
     ctx.globalCompositeOperation = 'multiply';
@@ -69,47 +140,122 @@
         return distance < (circle1.radius + circle2.radius);
     }
 
-    // Genera una pregunta aleatoria sobre intersección de círculos
-    function generateRandomQuestion() {
-        const pairs = [
-            { circle1: "A", circle2: "B" },
-            { circle1: "A", circle2: "C" },
-            { circle1: "B", circle2: "C" }
-        ];
-        currentQuestion = pairs[Math.floor(Math.random() * pairs.length)];
-        document.getElementById("question").innerText = `¿Intercepta ${currentQuestion.circle1} con ${currentQuestion.circle2}?`;
+    // Función para verificar si un círculo contiene a otro
+    function circleContains(circle1, circle2) {
+        const dx = circle1.x - circle2.x;
+        const dy = circle1.y - circle2.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance + circle2.radius < circle1.radius;
     }
 
-    // Función para verificar la respuesta del usuario
-    function checkIntersection() {
-        const circle1 = circles.find(circle => circle.name === currentQuestion.circle1);
-        const circle2 = circles.find(circle => circle.name === currentQuestion.circle2);
+    // Función para verificar si los tres círculos tienen elementos en común (intersección múltiple)
+    function allCirclesIntersect(circle1, circle2, circle3) {
+        return circlesIntersect(circle1, circle2) && circlesIntersect(circle2, circle3) && circlesIntersect(circle1, circle3);
+    }
 
-        const resultElement = document.getElementById("result");
-        if (circlesIntersect(circle1, circle2)) {
-            resultElement.innerText = "¡Correcto! Los círculos están interceptados.";
-            resultElement.style.color = "lime";
-            updateScore(1); // Incrementar puntaje
+    // Genera una instrucción aleatoria sobre intersección, contención o intersección múltiple
+    function generateRandomInstruction() {
+        const instructionTypes = [
+            { type: "intersect", text: "Acomoda los conjuntos tal que", conditionText: "A y B se intercepten", check: circlesIntersect },
+            { type: "contains", text: "Acomoda los conjuntos tal que", conditionText: "A contenga a B", check: circleContains },
+            { type: "allIntersect", text: "Acomoda los conjuntos tal que", conditionText: "los tres conjuntos tengan elementos en común", check: allCirclesIntersect }
+        ];
+
+        const selectedType = instructionTypes[Math.floor(Math.random() * instructionTypes.length)];
+        let circle1, circle2, circle3;
+
+        if (selectedType.type === "intersect") {
+            [circle1, circle2] = getRandomCirclePair();
+            currentInstruction = { type: "intersect", circle1, circle2, check: selectedType.check };
+            document.getElementById("instruction").innerText = `${selectedType.text} ${circle1.name} y ${circle2.name} se intercepten`;
+        } else if (selectedType.type === "contains") {
+            [circle1, circle2] = getValidCirclePairForContainment();
+            currentInstruction = { type: "contains", circle1, circle2, check: selectedType.check };
+            document.getElementById("instruction").innerText = `${selectedType.text} ${circle1.name} contenga a ${circle2.name}`;
         } else {
-            resultElement.innerText = "Incorrecto. Los círculos no están interceptados.";
-            resultElement.style.color = "red";
-            updateScore(-1); // Decrementar puntaje
+            [circle1, circle2, circle3] = getRandomCircleTriple();
+            currentInstruction = { type: "allIntersect", circles: [circle1, circle2, circle3], check: selectedType.check };
+            document.getElementById("instruction").innerText = `${selectedType.text} los tres conjuntos tengan elementos en común`;
+        }
+    }
+
+    // Obtener un par aleatorio de círculos donde el primero pueda contener al segundo
+    function getValidCirclePairForContainment() {
+        let circle1, circle2;
+        do {
+            [circle1, circle2] = getRandomCirclePair();
+        } while (circle1.radius < circle2.radius); // Repetir hasta que el radio de circle1 sea mayor o igual al de circle2
+        return [circle1, circle2];
+    }
+
+    // Obtener un par aleatorio de círculos
+    function getRandomCirclePair() {
+        const shuffled = circles.sort(() => 0.5 - Math.random());
+        return [shuffled[0], shuffled[1]];
+    }
+
+    // Obtener un trío aleatorio de círculos
+    function getRandomCircleTriple() {
+        const shuffled = circles.sort(() => 0.5 - Math.random());
+        return [shuffled[0], shuffled[1], shuffled[2]];
+    }
+
+    // Función para verificar si la instrucción se ha cumplido
+    function checkCondition() {
+        let result = false;
+        if (currentInstruction.type === "intersect" || currentInstruction.type === "contains") {
+            result = currentInstruction.check(currentInstruction.circle1, currentInstruction.circle2);
+        } else if (currentInstruction.type === "allIntersect") {
+            const [circle1, circle2, circle3] = currentInstruction.circles;
+            result = currentInstruction.check(circle1, circle2, circle3);
         }
 
-        // Generar una nueva pregunta aleatoria
-        generateRandomQuestion();
+        if (result) {
+            updateScore(1, true); // Incrementar puntaje y mostrar "Correcto"
+        } else {
+            updateScore(-1, false); // Decrementar puntaje y mostrar "Incorrecto"
+        }
+
+        // Cambiar los tamaños de los círculos aleatoriamente
+        changeCircleSizes();
+
+        // Generar una nueva instrucción aleatoria
+        generateRandomInstruction();
     }
 
-    // Función para actualizar el puntaje
-    function updateScore(value) {
+    // Función para cambiar los tamaños de los círculos aleatoriamente
+    function changeCircleSizes() {
+        circles.forEach(circle => {
+            circle.radius = Math.floor(Math.random() * 101) + 20; // Tamaño aleatorio entre 20 y 120
+        });
+        drawCircles(); // Redibujar los círculos con el nuevo tamaño
+    }
+
+    // Función para actualizar el puntaje y el mensaje de estado
+    function updateScore(value, isCorrect) {
         score += value;
-        document.getElementById("score").innerText = `Puntuación: ${score}`;
+        const scoreElement = document.getElementById("score");
+        const statusMessage = document.getElementById("status-message");
+
+        // Actualizar puntaje
+        scoreElement.innerText = `Puntuación: ${score}`;
+
+        // Actualizar mensaje de estado a "Correcto" o "Incorrecto" y cambiar color basado en puntaje
+        if (isCorrect) {
+            statusMessage.innerText = "Correcto";
+            statusMessage.style.color = "lime";
+        } else {
+            statusMessage.innerText = "Incorrecto";
+            statusMessage.style.color = "red";
+        }
+
+        // Cambiar el color del puntaje según si es positivo o negativo
+        scoreElement.style.color = score < 0 ? "red" : "lime";
     }
 
     // Función para "enviar" el puntaje (por ahora no hace nada)
     function submitScore() {
         alert(`Puntaje enviado: ${score}`);
-        // Aquí se podría implementar la lógica para enviar el puntaje a un servidor en el futuro
     }
 
     // Detección de clic dentro de un círculo
@@ -149,6 +295,6 @@
         draggingCircle = null;
     });
 
-    // Inicializar la pregunta y dibujar los círculos
+    // Inicializar los círculos y la primera instrucción
     drawCircles();
-    generateRandomQuestion();</script>
+    generateRandomInstruction();</script>
