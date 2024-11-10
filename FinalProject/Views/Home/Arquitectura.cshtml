@@ -7,93 +7,110 @@
     <p>Contenido adicional relacionado con Arquitectura.</p>
 </div>
 
-<div class="calculator">
-    <h2>Calculadora de Conversión</h2>
-
-    <div>
+<div class="neon-calculator">
+    <div class="output-group">
         <label for="decimalInput">Decimal:</label>
-        <input type="number" id="decimalInput" oninput="convertFromDecimal()" placeholder="Ingrese decimal">
+        <input type="number" id="decimalInput" oninput="convertFromDecimal()" placeholder="Ingrese decimal" />
     </div>
 
-    <div>
-        <label for="binaryOutput">Binario:</label>
-        <input type="text" id="binaryOutput" oninput="convertToDecimalFromBinary()" placeholder="Resultado en binario">
+    <div class="output-group">
+        <label>Binario:</label>
+        <input type="text" id="binaryOutput" readonly placeholder="Resultado en binario">
     </div>
 
-    <div>
-        <label for="hexOutput">Hexadecimal:</label>
-        <input type="text" id="hexOutput" oninput="convertToDecimalFromHex()" placeholder="Resultado en hexadecimal">
+    <div class="output-group">
+        <label>Hexadecimal:</label>
+        <input type="text" id="hexOutput" readonly placeholder="Resultado en hexadecimal">
     </div>
 
-    <div>
-        <label for="ieee32Output">IEEE 754 (32 bits):</label>
-        <input type="text" id="ieee32Output" class="wide-output" readonly placeholder="Resultado en IEEE 754 (32 bits)">
+    <div class="output-group">
+        <label>IEEE 754 (32 bits):</label>
+        <input type="text" id="ieee32Output" readonly placeholder="Resultado en IEEE 754 (32 bits)">
     </div>
 
-    <div>
-        <label for="ieee64Output">IEEE 754 (64 bits):</label>
-        <input type="text" id="ieee64Output" class="wider-output" readonly placeholder="Resultado en IEEE 754 (64 bits)">
+    <div class="output-group">
+        <label>IEEE 754 (64 bits):</label>
+        <input type="text" id="ieee64Output" readonly placeholder="Resultado en IEEE 754 (64 bits)">
     </div>
 </div>
 
 <style>
-    .calculator div {
-        margin-bottom: 10px;
+    /* General */
+    body {
+        background-color: #1a1a1d;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
     }
 
-    .wide-output {
-        width: 400px; /* Ancho aumentado para IEEE 754 de 32 bits */
+    /* Neon Calculator */
+    .neon-calculator {
+        background-color: #1a1a1d;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.5);
+        text-align: center;
+        width: 700px; /* Aumenta este valor si quieres hacerlo aún más ancho */
     }
 
-    .wider-output {
-        width: 800px; /* Ancho aumentado para IEEE 754 de 64 bits */
+    /* Output Group */
+    .output-group {
+        margin-top: 15px;
     }
 
-    input[type="text"], input[type="number"] {
-        padding: 5px;
+    .output-group label {
+        font-size: 14px;
+        color: #0ff;
+        text-shadow: 0px 0px 5px #0ff;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .output-group input {
+        width: 100%;
+        padding: 10px;
         font-size: 16px;
+        background-color: #333;
+        color: #0ff;
+        border: none;
+        border-radius: 5px;
+        text-align: left;
+        box-shadow: 0px 0px 10px #0ff;
     }
+
+    input[type="text"]:read-only {
+        background-color: #333;
+    }
+
+    /* Ampliación del ancho para IEEE 754 */
+    #ieee32Output, #ieee64Output {
+        font-size: 14px;
+    }
+
+
 </style>
 
 <script>function convertFromDecimal() {
         const decimalValue = parseFloat(document.getElementById("decimalInput").value);
 
-        // Convertir a binario y hexadecimal
-        document.getElementById("binaryOutput").value = decimalValue.toString(2);
-        document.getElementById("hexOutput").value = decimalValue.toString(16).toUpperCase();
+        if (!isNaN(decimalValue)) {
+            // Convertir a binario y hexadecimal
+            document.getElementById("binaryOutput").value = decimalValue.toString(2);
+            document.getElementById("hexOutput").value = decimalValue.toString(16).toUpperCase();
 
-        // Convertir a IEEE 754
-        document.getElementById("ieee32Output").value = convertToIEEE754(decimalValue, 32);
-        document.getElementById("ieee64Output").value = convertToIEEE754(decimalValue, 64);
-    }
-
-    function convertToDecimalFromBinary() {
-        const binaryValue = document.getElementById("binaryOutput").value;
-
-        // Convertir de binario a decimal y hexadecimal
-        if (binaryValue) {
-            const decimalValue = parseInt(binaryValue, 2);
-            if (!isNaN(decimalValue)) {
-                document.getElementById("decimalInput").value = decimalValue;
-                document.getElementById("hexOutput").value = decimalValue.toString(16).toUpperCase();
-                document.getElementById("ieee32Output").value = convertToIEEE754(decimalValue, 32);
-                document.getElementById("ieee64Output").value = convertToIEEE754(decimalValue, 64);
-            }
-        }
-    }
-
-    function convertToDecimalFromHex() {
-        const hexValue = document.getElementById("hexOutput").value;
-
-        // Convertir de hexadecimal a decimal y binario
-        if (hexValue) {
-            const decimalValue = parseInt(hexValue, 16);
-            if (!isNaN(decimalValue)) {
-                document.getElementById("decimalInput").value = decimalValue;
-                document.getElementById("binaryOutput").value = decimalValue.toString(2);
-                document.getElementById("ieee32Output").value = convertToIEEE754(decimalValue, 32);
-                document.getElementById("ieee64Output").value = convertToIEEE754(decimalValue, 64);
-            }
+            // Convertir a IEEE 754
+            document.getElementById("ieee32Output").value = convertToIEEE754(decimalValue, 32);
+            document.getElementById("ieee64Output").value = convertToIEEE754(decimalValue, 64);
+        } else {
+            document.getElementById("binaryOutput").value = "";
+            document.getElementById("hexOutput").value = "";
+            document.getElementById("ieee32Output").value = "";
+            document.getElementById("ieee64Output").value = "";
         }
     }
 
