@@ -2,36 +2,39 @@
     ViewData["Title"] = "Arquitectura";
 }
 
-<div class="text-center">
-    <h1>@ViewData["Message"]</h1>
-    <p>Contenido adicional relacionado con Arquitectura.</p>
-</div>
-
-<div class="neon-calculator">
-    <div class="output-group">
-        <label for="decimalInput">Decimal:</label>
-        <input type="number" id="decimalInput" oninput="convertFromDecimal()" placeholder="Ingrese decimal" />
+<div class="content-wrapper">
+    <div class="neon-title">
+        <h2>Conversor para devs</h2>
     </div>
 
-    <div class="output-group">
-        <label>Binario:</label>
-        <input type="text" id="binaryOutput" readonly placeholder="Resultado en binario">
+    <div class="neon-calculator">
+        <div class="output-group">
+            <label for="decimalInput">Decimal:</label>
+            <input type="number" id="decimalInput" oninput="convertFromDecimal()" placeholder="Ingrese decimal" />
+        </div>
+
+        <div class="output-group">
+            <label>Binario:</label>
+            <input type="text" id="binaryOutput" readonly placeholder="Resultado en binario">
+        </div>
+
+        <div class="output-group">
+            <label>Hexadecimal:</label>
+            <input type="text" id="hexOutput" readonly placeholder="Resultado en hexadecimal">
+        </div>
+
+        <div class="output-group">
+            <label>IEEE 754 (32 bits):</label>
+            <input type="text" id="ieee32Output" readonly placeholder="Resultado en IEEE 754 (32 bits)">
+        </div>
+
+        <div class="output-group">
+            <label>IEEE 754 (64 bits):</label>
+            <input type="text" id="ieee64Output" readonly placeholder="Resultado en IEEE 754 (64 bits)">
+        </div>
     </div>
 
-    <div class="output-group">
-        <label>Hexadecimal:</label>
-        <input type="text" id="hexOutput" readonly placeholder="Resultado en hexadecimal">
-    </div>
-
-    <div class="output-group">
-        <label>IEEE 754 (32 bits):</label>
-        <input type="text" id="ieee32Output" readonly placeholder="Resultado en IEEE 754 (32 bits)">
-    </div>
-
-    <div class="output-group">
-        <label>IEEE 754 (64 bits):</label>
-        <input type="text" id="ieee64Output" readonly placeholder="Resultado en IEEE 754 (64 bits)">
-    </div>
+    <button class="home-button" onclick="location.href='/'">Volver al Home</button>
 </div>
 
 <style>
@@ -40,13 +43,39 @@
         background-color: #1a1a1d;
         color: #ffffff;
         font-family: Arial, sans-serif;
+        margin: 0;
+        height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
-        overflow: hidden;
     }
+
+    /* Content Wrapper */
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Neon Title */
+    .neon-title {
+        background-color: #1a1a1d;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px rgba(255, 20, 147, 0.8); /* Fucsia */
+        border: 2px solid #ff1493; /* Color de borde fucsia */
+        text-align: center;
+        width: 300px;
+    }
+
+        .neon-title h2 {
+            font-size: 24px;
+            color: #ff1493; /* Texto fucsia */
+            text-shadow: 0px 0px 5px #ff1493, 0px 0px 10px #ff1493;
+            margin: 0;
+        }
 
     /* Neon Calculator */
     .neon-calculator {
@@ -55,7 +84,7 @@
         border-radius: 10px;
         box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.5);
         text-align: center;
-        width: 700px; /* Aumenta este valor si quieres hacerlo aún más ancho */
+        width: 700px;
     }
 
     /* Output Group */
@@ -63,25 +92,25 @@
         margin-top: 15px;
     }
 
-    .output-group label {
-        font-size: 14px;
-        color: #0ff;
-        text-shadow: 0px 0px 5px #0ff;
-        display: block;
-        margin-bottom: 5px;
-    }
+        .output-group label {
+            font-size: 14px;
+            color: #0ff;
+            text-shadow: 0px 0px 5px #0ff;
+            display: block;
+            margin-bottom: 5px;
+        }
 
-    .output-group input {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        background-color: #333;
-        color: #0ff;
-        border: none;
-        border-radius: 5px;
-        text-align: left;
-        box-shadow: 0px 0px 10px #0ff;
-    }
+        .output-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #333;
+            color: #0ff;
+            border: none;
+            border-radius: 5px;
+            text-align: left;
+            box-shadow: 0px 0px 10px #0ff;
+        }
 
     input[type="text"]:read-only {
         background-color: #333;
@@ -92,7 +121,26 @@
         font-size: 14px;
     }
 
+    /* Home Button */
+    .home-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #ff1493;
+        background-color: transparent;
+        border: 2px solid #ff1493;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0px 0px 10px #ff1493;
+        text-shadow: 0px 0px 5px #ff1493;
+        transition: all 0.2s;
+    }
 
+        .home-button:hover {
+            color: #ffffff;
+            background-color: #ff1493;
+            box-shadow: 0px 0px 20px #ff1493;
+        }
 </style>
 
 <script>function convertFromDecimal() {
