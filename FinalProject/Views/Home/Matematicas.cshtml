@@ -9,27 +9,34 @@
     <!-- Canvas para dibujar los círculos -->
     <canvas id="colorCanvas" width="600" height="400"></canvas>
 
-    <!-- Pregunta y botón de verificación -->
+    <!-- Sección para mostrar la pregunta, puntaje y botones -->
     <div style="margin-top: 20px;">
         <p id="question">¿Intercepta A con B?</p>
-        <button onclick="checkIntersection()">Listo</button>
+
+        <!-- Marcador de puntuación -->
+        <p id="score" style="font-weight: bold; color: lime;">Puntuación: 0</p>
+
+        <!-- Botones -->
+        <button id="checkButton" onclick="checkIntersection()">Listo</button>
+        <button id="submitButton" onclick="submitScore()">Enviar Puntaje</button>
     </div>
 
     <!-- Resultado de la verificación -->
-    <p id="result" style="font-weight: bold; color: yellow;"></p>
+    <p id="result" style="font-weight: bold;"></p>
 </div>
 <script>const canvas = document.getElementById("colorCanvas");
     const ctx = canvas.getContext("2d");
 
     // Definición de los círculos con nombres, colores y posiciones iniciales
     const circles = [
-        { name: "A", x: 150, y: 200, radius: 80, color: "rgba(255, 255, 0, 0.5)" }, // Amarillo
-        { name: "B", x: 300, y: 200, radius: 70, color: "rgba(0, 0, 255, 0.5)" },   // Azul
+        { name: "A", x: 150, y: 200, radius: 50, color: "rgba(255, 255, 0, 0.5)" }, // Amarillo
+        { name: "B", x: 300, y: 200, radius: 50, color: "rgba(0, 0, 255, 0.5)" },   // Azul
         { name: "C", x: 450, y: 200, radius: 50, color: "rgba(255, 0, 0, 0.5)" }    // Rojo
     ];
 
     let draggingCircle = null;
     let offsetX, offsetY;
+    let score = 0; // Puntuación inicial
 
     // Pregunta actual sobre intersección
     let currentQuestion = { circle1: "A", circle2: "B" };
@@ -82,13 +89,27 @@
         if (circlesIntersect(circle1, circle2)) {
             resultElement.innerText = "¡Correcto! Los círculos están interceptados.";
             resultElement.style.color = "lime";
+            updateScore(1); // Incrementar puntaje
         } else {
             resultElement.innerText = "Incorrecto. Los círculos no están interceptados.";
             resultElement.style.color = "red";
+            updateScore(-1); // Decrementar puntaje
         }
 
         // Generar una nueva pregunta aleatoria
         generateRandomQuestion();
+    }
+
+    // Función para actualizar el puntaje
+    function updateScore(value) {
+        score += value;
+        document.getElementById("score").innerText = `Puntuación: ${score}`;
+    }
+
+    // Función para "enviar" el puntaje (por ahora no hace nada)
+    function submitScore() {
+        alert(`Puntaje enviado: ${score}`);
+        // Aquí se podría implementar la lógica para enviar el puntaje a un servidor en el futuro
     }
 
     // Detección de clic dentro de un círculo

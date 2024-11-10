@@ -6,3 +6,56 @@
     <h1>@ViewData["Message"]</h1>
     <p>Contenido adicional relacionado con Arquitectura.</p>
 </div>
+
+<div class="calculator">
+    <h2>Calculadora de Conversión</h2>
+
+    <div>
+        <label for="decimalInput">Decimal:</label>
+        <input type="number" id="decimalInput" oninput="convertFromDecimal()" placeholder="Ingrese decimal">
+    </div>
+
+    <div>
+        <label for="binaryOutput">Binario:</label>
+        <input type="text" id="binaryOutput" oninput="convertToDecimalFromBinary()" placeholder="Resultado en binario">
+    </div>
+
+    <div>
+        <label for="hexOutput">Hexadecimal:</label>
+        <input type="text" id="hexOutput" oninput="convertToDecimalFromHex()" placeholder="Resultado en hexadecimal">
+    </div>
+</div>
+
+<script>function convertFromDecimal() {
+        const decimalValue = document.getElementById("decimalInput").value;
+
+        // Convertir a binario y hexadecimal
+        document.getElementById("binaryOutput").value = parseInt(decimalValue, 10).toString(2);
+        document.getElementById("hexOutput").value = parseInt(decimalValue, 10).toString(16).toUpperCase();
+    }
+
+    function convertToDecimalFromBinary() {
+        const binaryValue = document.getElementById("binaryOutput").value;
+
+        // Convertir de binario a decimal y hexadecimal
+        if (binaryValue) {
+            const decimalValue = parseInt(binaryValue, 2);
+            if (!isNaN(decimalValue)) {
+                document.getElementById("decimalInput").value = decimalValue;
+                document.getElementById("hexOutput").value = decimalValue.toString(16).toUpperCase();
+            }
+        }
+    }
+
+    function convertToDecimalFromHex() {
+        const hexValue = document.getElementById("hexOutput").value;
+
+        // Convertir de hexadecimal a decimal y binario
+        if (hexValue) {
+            const decimalValue = parseInt(hexValue, 16);
+            if (!isNaN(decimalValue)) {
+                document.getElementById("decimalInput").value = decimalValue;
+                document.getElementById("binaryOutput").value = decimalValue.toString(2);
+            }
+        }
+    }</script>
