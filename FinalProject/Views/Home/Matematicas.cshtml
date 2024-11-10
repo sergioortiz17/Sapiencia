@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Matematicas";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    <p>Contenido adicional relacionado con Matemáticas.</p>
+
+    <!-- Canvas para dibujar los círculos -->
+    <canvas id="colorCanvas" width="600" height="400"></canvas>
+
+    <!-- Pregunta y botón de verificación -->
+    <div style="margin-top: 20px;">
+        <p id="question">¿Intercepta A con B?</p>
+        <button onclick="checkIntersection()">Listo</button>
+    </div>
+
+    <!-- Resultado de la verificación -->
+    <p id="result" style="font-weight: bold; color: yellow;"></p>
+</div>
+<script>const canvas = document.getElementById("colorCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Definición de los círculos con nombres, colores y posiciones iniciales
+    const circles = [
+        { name: "A", x: 150, y: 200, radius: 80, color: "rgba(255, 255, 0, 0.5)" }, // Amarillo
+        { name: "B", x: 300, y: 200, radius: 70, color: "rgba(0, 0, 255, 0.5)" },   // Azul
+        { name: "C", x: 450, y: 200, radius: 50, color: "rgba(255, 0, 0, 0.5)" }    // Rojo
+    ];
+
+    let draggingCircle = null;
+    let offsetX, offsetY;
+
+    // Pregunta actual sobre intersección
+    let currentQuestion = { circle1: "A", circle2: "B" };
+
+    // Modo de mezcla para combinar colores
+    ctx.globalCompositeOperation = 'multiply';
+
+    // Función para dibujar los círculos
+    function drawCircles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+        circles.forEach(circle => {
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+            ctx.fillStyle = circle.color;
+            ctx.fill();
+
+            // Dibujar el nombre de cada círculo
+            ctx.fillStyle = "white";
+            ctx.font = "18px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(circle.name, circle.x, circle.y + 5);
+        });
+    }
+
+    // Función para verificar si dos círculos se interceptan
+    function circlesIntersect(circle1, circle2) {
+        const dx = circle1.x - circle2.x;
+        const dy = circle1.y - circle2.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < (circle1.radius + circle2.radius);
+    }
+
+    // Genera una pregunta aleatoria sobre intersección de círculos
+    function generateRandomQuestion() {
+        const pairs = [
+            { circle1: "A", circle2: "B" },
+            { circle1: "A", circle2: "C" },
+            { circle1: "B", circle2: "C" }
+        ];
+        currentQuestion = pairs[Math.floor(Math.random() * pairs.length)];
+        document.getElementById("question").innerText = `¿Intercepta ${currentQuestion.circle1} con ${currentQuestion.circle2}?`;
+    }
+
+    // Función para verificar la respuesta del usuario
+    function checkIntersection() {
+        const circle1 = circles.find(circle => circle.name === currentQuestion.circle1);
+        const circle2 = circles.find(circle => circle.name === currentQuestion.circle2);
+
+        const resultElement = document.getElementById("result");
+        if (circlesIntersect(circle1, circle2)) {
+            resultElement.innerText = "¡Correcto! Los círculos están interceptados.";
+            resultElement.style.color = "lime";
+        } else {
+            resultElement.innerText = "Incorrecto. Los círculos no están interceptados.";
+            resultElement.style.color = "red";
+        }
+
+        // Generar una nueva pregunta aleatoria
+        generateRandomQuestion();
+    }
+
+    // Detección de clic dentro de un círculo
+    function isInsideCircle(x, y, circle) {
+        const dx = x - circle.x;
+        const dy = y - circle.y;
+        return Math.sqrt(dx * dx + dy * dy) < circle.radius;
+    }
+
+    // Evento de mouse down para iniciar el arrastre
+    canvas.addEventListener("mousedown", (e) => {
+        const mouseX = e.offsetX;
+        const mouseY = e.offsetY;
+
+        // Verificar si el clic fue dentro de algún círculo
+        for (const circle of circles) {
+            if (isInsideCircle(mouseX, mouseY, circle)) {
+                draggingCircle = circle;
+                offsetX = mouseX - circle.x;
+                offsetY = mouseY - circle.y;
+                return;
+            }
+        }
+    });
+
+    // Evento de mouse move para mover el círculo
+    canvas.addEventListener("mousemove", (e) => {
+        if (draggingCircle) {
+            draggingCircle.x = e.offsetX - offsetX;
+            draggingCircle.y = e.offsetY - offsetY;
+            drawCircles();
+        }
+    });
+
+    // Evento de mouse up para detener el arrastre
+    canvas.addEventListener("mouseup", () => {
+        draggingCircle = null;
+    });
+
+    // Inicializar la pregunta y dibujar los círculos
+    drawCircles();
+    generateRandomQuestion();</script>

@@ -1,0 +1,46 @@
+﻿body {
+    background-color: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.display-4 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 24px;
+    margin-bottom: 40px;
+}
+
+.image {
+    width: 600px;
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .image:hover {
+        transform: scale(1.05); /* Efecto de zoom suave al pasar el cursor */
+        box-shadow: 0 0 20px #0f0, 0 0 30px #0f0, 0 0 40px #0f0, 0 0 50px #0f0; /* Efecto de neón en verde */
+        border: 2px solid #0f0; /* Borde de neón */
+    }
+
+/* Estilos específicos para el canvas */
+canvas {
+    display: block;
+    margin: 20px auto; /* Centra el canvas horizontalmente */
+    border: 2px solid #444; /* Borde gris oscuro alrededor del canvas */
+    background-color: black; /* Fondo negro para el canvas */
+    cursor: pointer;
+}

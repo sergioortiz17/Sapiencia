@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Estilos para el efecto neón -->
+<style>
+    body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .display-4 {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 24px;
+        margin-bottom: 40px;
+    }
+
+    .image {
+        width: 600px;
+        border-radius: 10px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .image:hover {
+            transform: scale(1.05); /* Agranda la imagen */
+            box-shadow: 0 0 20px #0f0, 0 0 30px #0f0, 0 0 40px #0f0, 0 0 50px #0f0; /* Efecto neón */
+            border: 2px solid #0f0; /* Borde neón */
+        }
+</style>
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenido a la Página Principal</h1>
+    <p>Selecciona una de las imágenes para ir a otra página.</p>
+
+    <!-- Imagen para la página de Matemáticas -->
+    <a href="@Url.Action("Matematicas", "Home")">
+        <img src="~/images/las-matematicas.jpeg" alt="Matematicas" class="image" style="margin: 20px;">
+    </a>
+
+    <!-- Imagen para la página de Arquitectura -->
+    <a href="@Url.Action("Arquitectura", "Home")">
+        <img src="~/images/ArquitecturaSimpsons.jpg" alt="Arquitectura" class="image" style="margin: 20px;">
+    </a>
+</div>
